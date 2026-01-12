@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build Your Dream Safari | Interactive Package Builder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/989ba93bfa.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <!-- <div class="bg-pattern"></div> -->
+
+    <div class="hero">
+        <h1>Build Your Dream Safari!</h1>
+        <p>Create your perfect African adventure - Just like ordering at KFC, but way more exciting! </p>
+    </div>
+
+    <div class="container">
+        <div class="step-indicator">
+            <div class="step-item active" data-step="1">
+                <div class="step-number">1</div>
+                <span>Pick Destinations</span>
+            </div>
+            <div class="step-item" data-step="2">
+                <div class="step-number">2</div>
+                <span>Add Activities</span>
+            </div>
+            <div class="step-item" data-step="3">
+                <div class="step-number">3</div>
+                <span>Choose Stay</span>
+            </div>
+            <div class="step-item" data-step="4">
+                <div class="step-number">4</div>
+                <span>Review & Submit</span>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="content-panel" id="contentPanel">
+                <!-- Dynamic content -->
+            </div>
+
+            <div class="sidebar">
+                <div class="cart-panel">
+                    <h2 class="cart-title">Your Safari Cart</h2>
+                    <div id="cartItems">
+                        <div class="cart-empty">Start building your adventure!<br>Pick destinations to begin</div>
+                    </div>
+                    <div id="cartSummary"></div>
+                    <button class="submit-btn" id="submitBtn" disabled>Request Your Custom Quote!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+>
+    <script>
+        const tourData = {
+            destinations: {
+                windhoek: {
+                    id: 'windhoek',
+                    name: 'Windhoek',
+                    icon: '/images/windhoek.webp',
+                    tagline: 'Capital City - Starting Point',
+                    description: 'Namibia\'s vibrant capital, perfect as a starting or ending point with international airport access.',
+                    days: '1',
+                    highlights: ['City tours', 'Craft markets', 'Museums'],
+                    distance: '0 km',
+                    activities: [
+                        { name: 'City Tour', desc: 'Explore historic buildings, Independence Avenue, and German colonial architecture' },
+                        { name: 'Craft Markets', desc: 'Shop for local crafts, jewelry, and wood carvings at various markets' },
+                        {  name: 'Local Cuisine', desc: 'Try traditional Namibian food at Joe\'s Beerhouse and other restaurants' }
+                    ],
+                    routes: [
+                        { to: 'Sossusvlei', distance: '350 km', time: '4.5 hours' },
+                        { to: 'Swakopmund', distance: '360 km', time: '4 hours' },
+                        { to: 'Etosha (Anderson Gate)', distance: '400 km', time: '5 hours' }
+                    ]
+                },
+                sossusvlei: {
+                    id: 'sossusvlei',
+                    name: 'Sossusvlei & Namib Desert',
+                    icon: '/images/sossuvlei.webp',
+                    tagline: 'World\'s Highest Sand Dunes',
+                    description: 'Home to the iconic red dunes of the Namib Desert, including Dune 45 and Big Daddy. Visit the surreal Deadvlei clay pan with ancient trees.',
+                    days: '2-3',
+                    highlights: ['Dune 45', 'Deadvlei', 'Sesriem Canyon'],
+                    distance: '350 km from Windhoek',
+                    activities: [
+                        {  name: 'Sunrise Dune Climbing', desc: 'Climb Dune 45 or Big Daddy at sunrise for spectacular desert views and photos' },
+                        {  name: 'Deadvlei Exploration', desc: 'Walk through the white clay pan surrounded by ancient dead camel thorn trees' },
+                        {  name: 'Sesriem Canyon', desc: 'Explore the narrow gorge carved by the Tsauchab River over millions of years' },
+                        {  name: 'Hot Air Balloon Safari', desc: 'Float over the desert dunes at dawn for unforgettable aerial views' },
+                        {  name: 'Stargazing', desc: 'Experience some of the darkest skies in the world perfect for stargazing' }
+                    ],
+                    routes: [
+                        { to: 'Windhoek', distance: '350 km', time: '4.5 hours' },
+                        { to: 'Swakopmund', distance: '360 km', time: '5 hours' },
+                        { to: 'Lüderitz', distance: '400 km', time: '5 hours' }
+                    ],
+                    tips: ['Book accommodation well in advance', '4x4 recommended for last 5km to Sossusvlei', 'Start dune climbs early morning', 'Bring plenty of water']
+                },
+                swakopmund: {
+                    id: 'swakopmund',
+                    name: 'Swakopmund',
+                    icon: '/images/swak.jpg',
+                    tagline: 'Adventure Capital by the Sea',
+                    description: 'Charming coastal town with German colonial architecture, adventure activities, and gateway to the Skeleton Coast.',
+                    days: '2-3',
+                    highlights: ['Skeleton Coast', 'Adventure sports', 'German architecture'],
+                    distance: '360 km from Windhoek',
+                    activities: [
+                        {  name: 'Sandboarding', desc: 'Slide down massive sand dunes on boards - thrilling desert adventure!' },
+                        {  name: 'Quad Biking', desc: 'Ride through the dunes on powerful quad bikes' },
+                        {  name: 'Seal Colony Visit', desc: 'Visit Cape Cross to see thousands of Cape fur seals' },
+                        {  name: 'City Walking Tour', desc: 'Explore German colonial buildings, lighthouse, and jetty' },
+                        {  name: 'Skydiving', desc: 'Tandem skydiving over the desert meeting the ocean' },
+                        {  name: 'Skeleton Coast Scenic Flight', desc: 'Fly over shipwrecks and dramatic coastline' }
+                    ],
+                    routes: [
+                        { to: 'Windhoek', distance: '360 km', time: '4 hours' },
+                        { to: 'Sossusvlei', distance: '360 km', time: '5 hours' },
+                        { to: 'Etosha (via Palmwag)', distance: '450 km', time: '6 hours' },
+                        { to: 'Damaraland', distance: '250 km', time: '3.5 hours' }
+                    ],
+                    tips: ['Weather can be foggy/cold', 'Many restaurants close on Sundays', 'Book adventure activities in advance']
+                },
+                etosha: {
+                    id: 'etosha',
+                    name: 'Etosha National Park',
+                    icon: '/images/etosha.webp',
+                    tagline: 'World-Class Wildlife Viewing',
+                    description: 'One of Africa\'s greatest wildlife parks centered around a massive salt pan. Exceptional game viewing at waterholes with lions, elephants, rhinos, and more.',
+                    days: '3-4',
+                    highlights: ['Big 5 wildlife', 'Salt pan', 'Floodlit waterholes'],
+                    distance: '400 km from Windhoek',
+                    activities: [
+                        {  name: 'Self-Drive Game Viewing', desc: 'Drive through the park at your own pace, stopping at numerous waterholes' },
+                        {  name: 'Photography at Waterholes', desc: 'Photograph wildlife at close range from viewing platforms' },
+                        { name: 'Nighttime Waterhole Viewing', desc: 'Watch wildlife at floodlit waterholes after dark from rest camps' },
+                        {  name: 'Rhino Tracking', desc: 'Spot both black and white rhinos at waterholes' },
+                        {  name: 'Predator Watching', desc: 'Lions, leopards, and cheetahs frequently seen hunting' }
+                    ],
+                    routes: [
+                        { to: 'Windhoek', distance: '400 km', time: '5 hours' },
+                        { to: 'Swakopmund (via Outjo)', distance: '450 km', time: '6 hours' },
+                        { to: 'Waterberg Plateau', distance: '250 km', time: '3 hours' },
+                        { to: 'Caprivi Strip', distance: '700 km', time: '9 hours' }
+                    ],
+                    gates: ['Anderson Gate (South)', 'Von Lindequist Gate (East)', 'Galton Gate (West)'],
+                    camps: ['Okaukuejo (famous waterhole)', 'Halali (central)', 'Namutoni (historic fort)'],
+                    tips: ['Book camps months in advance', 'Best viewing: dry season May-Oct', 'Malaria-free', 'Fill up with fuel before entering']
+                },
+                damaraland: {
+                    id: 'damaraland',
+                    name: 'Damaraland',
+                    icon: '/images/damaraland.jpg',
+                    tagline: 'Desert Elephants & Ancient Art',
+                    description: 'Rugged wilderness home to desert-adapted elephants, ancient rock art at Twyfelfontein, and dramatic mountain landscapes.',
+                    days: '2-3',
+                    highlights: ['Desert elephants', 'Rock art', 'Petrified forest'],
+                    distance: '450 km from Windhoek',
+                    activities: [
+                        {  name: 'Desert Elephant Tracking', desc: 'Track and observe rare desert-adapted elephants on foot with guides' },
+                        {name: 'Twyfelfontein Rock Art', desc: 'View 6,000-year-old San Bushman rock engravings and paintings' },
+                        {  name: 'Petrified Forest', desc: 'See ancient fossilized tree trunks over 280 million years old' },
+                        {  name: 'Burnt Mountain', desc: 'View the colorful volcanic rock formations' },
+                        { name: 'Organ Pipes', desc: 'See natural dolerite columns formed by ancient lava flows' }
+                    ],
+                    routes: [
+                        { to: 'Swakopmund', distance: '250 km', time: '3.5 hours' },
+                        { to: 'Etosha (via Kamanjab)', distance: '200 km', time: '3 hours' },
+                        { to: 'Skeleton Coast', distance: '150 km', time: '2.5 hours' }
+                    ],
+                    tips: ['Rocky roads - 4x4 recommended', 'Limited fuel stations', 'Book lodge accommodation in advance']
+                },
+                caprivi: {
+                    id: 'caprivi',
+                    name: 'Caprivi Strip (Zambezi Region)',
+                    icon:'/images/caprivi.jpg',
+                    tagline: 'Lush Waterways & Abundant Wildlife',
+                    description: 'Green corridor with rivers, wetlands, and excellent birding. Gateway to Botswana and Victoria Falls.',
+                    days: '2-3',
+                    highlights: ['River safaris', 'Birding paradise', 'Hippos & crocs'],
+                    distance: '1,100 km from Windhoek',
+                    activities: [
+                        {  name: 'Boat Safaris', desc: 'Cruise the Kwando/Chobe rivers spotting hippos, crocodiles, and birds' },
+                        {  name: 'Bird Watching', desc: 'Over 450 bird species in lush wetland habitats' },
+                        { name: 'Fishing', desc: 'Tiger fishing and other species in the rivers' },
+                        {  name: 'Game Drives', desc: 'See elephants, buffalo, and antelope in riverside reserves' }
+                    ],
+                    routes: [
+                        { to: 'Etosha', distance: '700 km', time: '9 hours' },
+                        { to: 'Victoria Falls', distance: '450 km', time: '6 hours' },
+                        { to: 'Chobe (Botswana)', distance: '70 km', time: '1 hour' }
+                    ],
+                    tips: ['Malaria area - take precautions', 'Rainy season Dec-Mar can flood roads', 'Border crossing to Botswana nearby']
+                },
+                vic_falls: {
+                    id: 'vic_falls',
+                    name: 'Victoria Falls',
+                    icon: '/images/victoria_falls_1.jpg',
+                    tagline: 'The Smoke That Thunders',
+                    description: 'One of the Seven Natural Wonders. The world\'s largest waterfall and adventure activity capital.',
+                    days: '2-3',
+                    highlights: ['The Falls', 'Bungee jumping', 'Zambezi cruises'],
+                    distance: '1,250 km from Windhoek',
+                    activities: [
+                        {  name: 'Falls Viewing', desc: 'Walk along the viewpoints on both Zimbabwe and Zambia sides' },
+                        {  name: 'Devil\'s Pool', desc: 'Swim at the edge of the falls (Sep-Dec only when water is low)' },
+                        {  name: 'Bungee Jumping', desc: '111-meter jump from Victoria Falls Bridge' },
+                        {  name: 'White Water Rafting', desc: 'Grade 5 rapids below the falls (Aug-Dec best)' },
+                        {  name: 'Helicopter Flight', desc: 'Flight of Angels scenic helicopter tour over the falls' },
+                        {  name: 'Sunset Cruise', desc: 'Relaxing cruise on the Zambezi River with wildlife viewing' }
+                    ],
+                    routes: [
+                        { to: 'Livingstone Airport', distance: '10 km', time: '15 mins' },
+                        { to: 'Chobe, Botswana', distance: '100 km', time: '1.5 hours' },
+                        { to: 'Hwange NP, Zimbabwe', distance: '200 km', time: '2.5 hours' }
+                    ],
+                    tips: ['Need visa for both Zambia/Zimbabwe', 'High water Feb-May (most spray)', 'Low water Sep-Dec (Devil\'s Pool open)', 'Book activities in advance']
+                },
+                chobe: {
+                    id: 'chobe',
+                    name: 'Chobe National Park, Botswana',
+                    icon: '/images/chobe.jpg',
+                    tagline: 'Elephant Capital of Africa',
+                    description: 'Home to the largest elephant population in Africa. Exceptional river safaris along the Chobe River.',
+                    days: '2-3',
+                    highlights: ['Elephant herds', 'Boat safaris', 'Big cats'],
+                    distance: '1,350 km from Windhoek',
+                    activities: [
+                        {  name: 'Chobe River Cruise', desc: 'Boat safaris to see massive elephant herds drinking and swimming' },
+                        {  name: 'Game Drives', desc: 'Morning and afternoon drives spotting predators and plains game' },
+                        {  name: 'Predator Viewing', desc: 'Lions, leopards, wild dogs, and hyenas are commonly seen' },
+                        {  name: 'Hippo Viewing', desc: 'Hundreds of hippos in the Chobe River' },
+                        {  name: 'Photography Safari', desc: 'Perfect lighting and close wildlife encounters for photographers' }
+                    ],
+                    routes: [
+                        { to: 'Victoria Falls', distance: '100 km', time: '1.5 hours' },
+                        { to: 'Okavango Delta (Maun)', distance: '310 km', time: '5 hours' },
+                        { to: 'Nata', distance: '200 km', time: '2.5 hours' }
+                    ],
+                    tips: ['Kasane is the gateway town', 'Dry season May-Oct best for game viewing', 'Day trips possible from Vic Falls', 'Yellow fever certificate required from endemic areas']
+                },
+                okavango: {
+                    id: 'okavango',
+                    name: 'Okavango Delta, Botswana',
+                    icon: '/images/okavanga.jpg',
+                    tagline: 'World\'s Largest Inland Delta',
+                    description: 'UNESCO World Heritage Site. Pristine waterways, islands, and exceptional wildlife in a unique ecosystem.',
+                    days: '3-5',
+                    highlights: ['Mokoro trips', 'Water safaris', 'Remote camps'],
+                    distance: '1,350 km from Windhoek (via Maun)',
+                    activities: [
+                        {  name: 'Mokoro Excursions', desc: 'Traditional dugout canoe trips through channels and lagoons' },
+                        {  name: 'Motorboat Safaris', desc: 'Explore deeper channels and larger waterways' },
+                        {  name: 'Walking Safaris', desc: 'Guided walks on islands with armed rangers' },
+                        {  name: 'Big Cat Tracking', desc: 'Excellent lion, leopard, and cheetah viewing' },
+                        {  name: 'Bird Watching', desc: 'Over 400 bird species in lush delta habitat' },
+                        {  name: 'Fishing', desc: 'Catch and release tiger fish and bream' }
+                    ],
+                    routes: [
+                        { to: 'Maun (gateway)', distance: 'Fly-in to camps', time: '20-45 min flights' },
+                        { to: 'Chobe', distance: '310 km from Maun', time: '5 hours' },
+                        { to: 'Moremi Game Reserve', distance: 'Within delta', time: 'Connected' }
+                    ],
+                    tips: ['Most camps are fly-in only', 'Pack light - 20kg baggage limit on charter flights', 'Book 6-12 months ahead', 'High water Jun-Aug, low water Sep-Oct', 'Expensive but worth it!']
+                }
+            },
+
+            activities: [
+                { id: 'game-drive', name: 'Game Drives', icon: '/images/activities/game.jpg', desc: 'Morning and afternoon wildlife viewing', duration: '3-4 hours' },
+                { id: 'walking-safari', name: 'Walking Safari', icon: '/images/activities/walking.webp', desc: 'Guided bush walks with rangers', duration: '2-3 hours' },
+                { id: 'boat-safari', name: 'Boat Safari', icon: '/images/activities/boat.jpg', desc: 'River cruises for wildlife viewing', duration: '2-3 hours' },
+                { id: 'hot-air-balloon', name: 'Hot Air Balloon', icon: '/images/activities/baloon.jpg', desc: 'Dawn flights over landscapes', duration: '4 hours total' },
+                { id: 'cultural-visit', name: 'Cultural Visit', icon: '/images/activities/cultutal.jpg', desc: 'Meet local communities', duration: '3-4 hours' },
+                { id: 'scenic-flight', name: 'Scenic Flight', icon: '/images/activities/flight.jpeg', desc: 'Aerial views of destinations', duration: 'Variable' }
+            ],
+
+            accommodation: [
+                { id: 'luxury-lodge', name: 'Luxury Lodge', icon:  '/images/accom/luxury.jpg', desc: 'Five-star with all amenities', features: 'All meals, premium drinks, activities, spa' },
+                { id: 'tented-camp', name: 'Tented Camp', icon: '/images/accom/tent.jpg',desc: 'Comfort meets adventure', features: 'En-suite, meals, most activities' },
+                { id: 'guesthouse', name: 'Guesthouse', icon: '/images/accom/guest.jpg', desc: 'Cozy and affordable', features: 'Breakfast, clean rooms' },
+                { id: 'camping', name: 'Camping', icon: '/images/accom/camping.jpeg', desc: 'Budget adventure', features: 'Basic facilities, self-catering' }
+            ]
+        };
+
+        let state = {
+            step: 1,
+            destinations: [],
+            activities: [],
+            accommodation: null,
+            totalDistance: 0,
+            totalDays: 0
+        };
+
+        function init() {
+            renderStep(1);
+            updateCart();
+        }
+
+        function renderStep(step) {
+            state.step = step;
+            updateStepIndicator();
+            
+            const content = document.getElementById('contentPanel');
+            
+            switch(step) {
+                case 1:
+                    renderDestinations();
+                    break;
+                case 2:
+                    renderActivities();
+                    break;
+                case 3:
+                    renderAccommodation();
+                    break;
+                case 4:
+                    renderReview();
+                    break;
+            }
+        }
+
+        function updateStepIndicator() {
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                item.classList.remove('active', 'completed');
+                if (index + 1 < state.step) {
+                    item.classList.add('completed');
+                } else if (index + 1 === state.step) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        function renderDestinations() {
+            const destinations = Object.values(tourData.destinations);
+            const html = `
+                <h2 class="panel-title">Choose Your Destinations</h2>
+                <p class="panel-subtitle">Pick the places you want to explore! You can select multiple destinations to create your perfect route.</p>
+                
+                ${state.destinations.length > 0 ? renderRouteBuilder() : ''}
+                
+                <div class="destinations-grid">
+                    ${destinations.map(dest => `
+                        <div class="destination-card ${state.destinations.includes(dest.id) ? 'selected' : ''}" 
+                             onclick="toggleDestination('${dest.id}')">
+                            <div class="destination-image">
+                                <img src="${dest.icon}">
+                                </div>
+                            <div class="destination-body">
+                                <div class="destination-tagline">${dest.tagline}</div>
+                                <h3 class="destination-name">${dest.name}</h3>
+                                <p class="destination-desc">${dest.description}</p>
+                                <div class="destination-stats">
+                                    <span class="stat-badge"><i class="fa-solid fa-calendar"></i> ${dest.days} days</span>
+                                    <span class="stat-badge"><i class="fa-solid fa-location-dot"></i> ${dest.distance}</span>
+                                </div>
+                                <button class="detail-btn" onclick="event.stopPropagation(); showDetails('${dest.id}')">
+                                    View Full Details
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" disabled>← Previous</button>
+                    <button class="btn btn-primary" onclick="renderStep(2)" ${state.destinations.length === 0 ? 'disabled' : ''}>
+                        Next: Add Activities →
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('contentPanel').innerHTML = html;
+        }
+
+        function renderRouteBuilder() {
+            if (state.destinations.length === 0) return '';
+            
+            const stops = state.destinations.map(id => tourData.destinations[id]);
+            
+            return `
+                <div class="route-builder">
+                    <h3>Your Route</h3>
+                    <div class="route-stops">
+                        <div class="route-line"></div>
+                        ${stops.map((dest, index) => `
+                            <div class="route-stop">
+                                <div class="route-img">
+                                    <img src="${dest.icon}">
+                                    </div>
+                                <div class="route-stop-name">
+                                    <p>${dest.name}</p>
+                                   
+                                   </div>
+                                <div class="route-stop-distance">${dest.days} recommended</div>
+                                ${index < stops.length - 1 ? `
+                                    <div class="route-stop-duration">⬇️ Next destination</div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActivities() {
+            const html = `
+                <h2 class="panel-title">Add Exciting Activities</h2>
+                <p class="panel-subtitle">Select the experiences you'd like to include in your adventure!</p>
+                
+                <div class="destinations-grid">
+                    ${tourData.activities.map(act => `
+                        <div class="destination-card ${state.activities.includes(act.id) ? 'selected' : ''}" 
+                             onclick="toggleActivity('${act.id}')">
+                            <div class="destination-body">
+                                <div style="font-size: 3rem; text-align: center; margin-bottom: 15px;">
+                                    <img class="activity-img" src="${act.icon}">
+                                 </div>
+                                <h3 class="destination-name">${act.name}</h3>
+                                <p class="destination-desc">${act.desc}</p>
+                                <div class="destination-stats">
+                                    <span class="stat-badge">⏱️ ${act.duration}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="renderStep(1)">← Previous</button>
+                    <button class="btn btn-primary" onclick="renderStep(3)" ${state.activities.length === 0 ? 'disabled' : ''}>
+                        Next: Choose Accommodation →
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('contentPanel').innerHTML = html;
+        }
+
+        function renderAccommodation() {
+            const html = `
+                <h2 class="panel-title">Choose Your Accommodation Style</h2>
+                <p class="panel-subtitle">Select the type of stay that matches your preferences and budget</p>
+                
+                <div class="destinations-grid">
+                    ${tourData.accommodation.map(acc => `
+                        <div class="destination-card ${state.accommodation === acc.id ? 'selected' : ''}" 
+                             onclick="selectAccommodation('${acc.id}')">
+                            <div class="destination-body">
+                                <div style="font-size: 3rem; text-align: center; margin-bottom: 15px;">
+                                    <img class="activity-img" src="${acc.icon}">
+                                   </div>
+                                <h3 class="destination-name">${acc.name}</h3>
+                                <p class="destination-desc">${acc.desc}</p>
+                                <div style="margin-top: 15px; padding: 15px; background: var(--light); border-radius: 10px;">
+                                    <strong style="display: block; margin-bottom: 5px;">Includes:</strong>
+                                    <span style="font-size: 0.9rem; color: var(--dark);">${acc.features}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="renderStep(2)">← Previous</button>
+                    <button class="btn btn-primary" onclick="renderStep(4)" ${!state.accommodation ? 'disabled' : ''}>
+                        Next: Review Package →
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('contentPanel').innerHTML = html;
+        }
+
+        function renderReview() {
+            const destinations = state.destinations.map(id => tourData.destinations[id]);
+            const activities = state.activities.map(id => tourData.activities.find(a => a.id === id));
+            const accommodation = tourData.accommodation.find(a => a.id === state.accommodation);
+            
+            const html = `
+                <h2 class="panel-title">Review Your Safari Package</h2>
+                <p class="panel-subtitle">Everything looks perfect? Time to request your custom quote!</p>
+                
+                ${renderRouteBuilder()}
+                
+                <div class="info-section">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">Your Destinations (${destinations.length})</h3>
+                    <div class="info-grid">
+                        ${destinations.map(dest => `
+                            <div class="info-card">
+                                <div style="font-size: 2rem; margin-bottom: 10px;">
+                                    <img class="activity-img" src="${dest.icon}">
+                                    </div>
+                                <div class="info-value">${dest.name}</div>
+                                <div class="info-label">${dest.days} recommended</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 style="color: var(--accent); margin-bottom: 20px;">Your Activities (${activities.length})</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        ${activities.map(act => `
+                            <span style="background: var(--light); padding: 10px 20px; border-radius: 20px; font-weight: 600;">
+                                <img class="activity-img" src="${act.icon}">
+                                ${act.name}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3 style="color: var(--success); margin-bottom: 20px;">Your Accommodation</h3>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <img class="activity-img" src="${accommodation.icon}">
+                            </div>
+                        <div class="activity-content">
+                            <div class="activity-name">${accommodation.name}</div>
+                            <div class="activity-desc">${accommodation.desc}<br><strong>Includes:</strong> ${accommodation.features}</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 30px; border-radius: 15px; color: white; text-align: center; margin-top: 30px;">
+                    <h3 style="font-size: 1.8rem; margin-bottom: 10px;">Your Adventure Awaits!</h3>
+                    <p style="font-size: 1.1rem; opacity: 0.95;">Click the button in your cart to request a detailed quote from our tour consultants!</p>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="renderStep(3)">← Previous</button>
+                    <button class="btn btn-primary" onclick="submitPackage()">
+                        Request My Custom Quote!
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('contentPanel').innerHTML = html;
+        }
+
+        function toggleDestination(id) {
+            const index = state.destinations.indexOf(id);
+            if (index > -1) {
+                state.destinations.splice(index, 1);
+            } else {
+                state.destinations.push(id);
+            }
+            updateCart();
+            renderDestinations();
+        }
+
+        function toggleActivity(id) {
+            const index = state.activities.indexOf(id);
+            if (index > -1) {
+                state.activities.splice(index, 1);
+            } else {
+                state.activities.push(id);
+            }
+            updateCart();
+            renderActivities();
+        }
+
+        function selectAccommodation(id) {
+            state.accommodation = id;
+            updateCart();
+            renderAccommodation();
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            let html = '';
+            let totalDays = 0;
+            
+            if (state.destinations.length === 0 && state.activities.length === 0 && !state.accommodation) {
+                cartItems.innerHTML = '<div class="cart-empty">Start building your adventure!<br>Pick destinations to begin</div>';
+                cartSummary.innerHTML = '';
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            // Destinations
+            state.destinations.forEach(id => {
+                const dest = tourData.destinations[id];
+                const days = parseInt(dest.days.split('-')[0]) || 1;
+                totalDays += days;
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-type">Destination</div>
+                        <div class="cart-item-name">
+                            <img class="cart-img" src="${dest.icon}">
+                            ${dest.name}</div>
+                        <div class="cart-item-detail">${dest.days} recommended</div>
+                    </div>
+                `;
+            });
+            
+            // Activities
+            state.activities.forEach(id => {
+                const act = tourData.activities.find(a => a.id === id);
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-type">Activity</div>
+                        <div class="cart-item-name">
+                             <img class="cart-img" src="${act.icon}">
+                             ${act.name}</div>
+                        <div class="cart-item-detail">${act.duration}</div>
+                    </div>
+                `;
+            });
+            
+            // Accommodation
+            if (state.accommodation) {
+                const acc = tourData.accommodation.find(a => a.id === state.accommodation);
+                html += `
+                    <div class="cart-item">
+                        <div class="cart-item-type">Accommodation</div>
+                        <div class="cart-item-name">
+                            <img class="cart-img" src="${acc.icon}">
+                            ${acc.name}</div>
+                        <div class="cart-item-detail">${acc.desc}</div>
+                    </div>
+                `;
+            }
+            
+            cartItems.innerHTML = html;
+            
+            // Summary
+            cartSummary.innerHTML = `
+                <div class="summary-box">
+                    <div class="summary-row">
+                        <span>Destinations:</span>
+                        <strong>${state.destinations.length}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Activities:</span>
+                        <strong>${state.activities.length}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Estimated Duration:</span>
+                        <strong>${totalDays} days</strong>
+                    </div>
+                    <div class="total-distance">
+                        ${state.destinations.length > 0 ? 'Custom Route' : 'Add destinations'}
+                    </div>
+                </div>
+            `;
+            
+            // Enable submit if all required fields
+            submitBtn.disabled = !(state.destinations.length > 0 && state.activities.length > 0 && state.accommodation);
+        }
+
+        function showDetails(destId) {
+            const dest = tourData.destinations[destId];
+            const modal = document.getElementById('detailModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <div class="modal-header">
+                    <button class="modal-close" onclick="closeModal()">×</button>
+                    
+                    <h2>${dest.name}</h2>
+                    <p>${dest.tagline}</p>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-img" style="font-size: 4rem; margin-bottom: 10px;">
+                        <img src="${dest.icon}">
+                        </div>
+                    <div class="info-section">
+                        <h3>Overview</h3>
+                        <p style="font-size: 1.1rem; line-height: 1.8; color: var(--dark);">${dest.description}</p>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h3>Highlights</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            ${dest.highlights.map(h => `
+                                <span style="background: var(--accent); color: white; padding: 10px 20px; border-radius: 20px; font-weight: 600;">
+                                    ${h}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h3>Activities You Can Do</h3>
+                        <ul class="activity-list">
+                            ${dest.activities.map(act => `
+                                <li class="activity-item">
+                                    <div class="activity-content">
+                                        <div class="activity-name">${act.name}</div>
+                                        <div class="activity-desc">${act.desc}</div>
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    
+                    ${dest.routes ? `
+                        <div class="info-section">
+                            <h3>Driving Distances From Here</h3>
+                            <div class="info-grid">
+                                ${dest.routes.map(route => `
+                                    <div class="info-card">
+                                        <div class="info-label">To ${route.to}</div>
+                                        <div class="info-value">${route.distance}</div>
+                                        <div class="info-label">${route.time}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${dest.tips ? `
+                        <div class="info-section">
+                            <h3>Travel Tips</h3>
+                            <ul style="list-style: none; padding: 0;">
+                                ${dest.tips.map(tip => `
+                                    <li style="padding: 10px; background: var(--light); margin-bottom: 10px; border-radius: 8px; border-left: 4px solid var(--accent);">
+                                        ${tip}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                    
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 20px;" onclick="closeModal()">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        function submitPackage() {
+            alert('🎉 Awesome! Your custom safari package has been submitted!\n\n' +
+                  'Our tour consultant will review your selections and send you a detailed quote with:\n\n' +
+                  '✅ Day-by-day itinerary\n' +
+                  '✅ Accommodation options & prices\n' +
+                  '✅ Activity bookings\n' +
+                  '✅ Transportation arrangements\n' +
+                  '✅ Complete pricing breakdown\n\n' +
+                  'Get ready for the adventure of a lifetime! 🦁🌍');
+            
+            console.log('Package submitted:', state);
+            // In production, send this to your backend
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
